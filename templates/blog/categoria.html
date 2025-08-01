@@ -1,0 +1,114 @@
+{% extends "blog/base.html" %}
+{% load static%}
+
+{% block content %}
+<!-- Crecimiento Category Section -->
+<section id="crecimiento-category" class="business-category section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <div class="section-title-container d-flex align-items-center justify-content-between">
+      <h2>{{ category.name }}</h2>
+    </div>
+  </div>
+  
+  <!-- Contenedor principal centrado -->
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12" data-aos="fade-up" data-aos-delay="100">
+        <div class="mx-auto" style="max-width: 1200px;">
+        
+        {% if posts %}
+          {% with featured=posts.0 %}
+            <div class="d-lg-flex post-entry mb-4">
+              <a href="{% url 'blog:post_detail' featured.slug %}" class="me-5 thumbnail d-inline-block mb-4 mb-lg-0 flex-shrink-0">
+                <img src="{{ featured.image.url }}" alt="{{ featured.title }}" class="img-fluid">
+              </a>
+              <div class="flex-grow-1 d-flex flex-column justify-content-center">
+                <div class="post-meta">
+                  <span class="date">{{ featured.category.name }}</span>
+                  <span class="mx-1">•</span>
+                  <span>{{ featured.created_at|date:"M d, Y" }}</span>
+                </div>
+                <h3><a href="{% url 'blog:post_detail' featured.slug %}">{{ featured.title }}</a></h3>
+                <p>{{ featured.content|truncatewords:30 }}</p>
+                <div class="d-flex align-items-center author">
+                  <div class="photo">
+                    <img src="{% static 'img/person-4.jpg' %}" alt="author" class="img-fluid">
+                  </div>
+                  <div class="name">
+                    <h3 class="m-0 p-0">{{ featured.author.get_full_name|default:featured.author.username }}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endwith %}
+
+          <!-- Resto de los posts -->
+          <div class="row g-2 mt-1">
+            {% for post in posts|slice:"1:" %}
+              <div class="col-lg-4 col-md-6">
+                <div class="post-list border-bottom h-100">
+                  <a href="{% url 'blog:post_detail' post.slug %}">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid mb-3">
+                  </a>
+                  <div class="post-meta">
+                    <span class="date">{{ post.category.name }}</span>
+                    <span class="mx-1">•</span>
+                    <span>{{ post.created_at|date:"M d, Y" }}</span>
+                  </div>
+                  <h2 class="mb-2"><a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a></h2>
+                  <span class="author mb-3 d-block">{{ post.author.get_full_name|default:post.author.username }}</span>
+                  <p class="mb-4 d-block">{{ post.content|truncatewords:20 }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+        {% else %}
+          <div class="alert alert-info text-center">
+            <h5>No hay publicaciones disponibles</h5>
+            <p class="lead mb-0">No hay publicaciones en esta categoría por el momento.</p>
+          </div>
+        {% endif %}
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Controles de paginación simplificada -->
+<nav aria-label="Navegación de páginas">
+  <ul class="pagination justify-content-center">
+    
+    <!-- Botón Anterior -->
+    <li class="page-item {% if not posts.has_previous %}disabled{% endif %}">
+      <a class="page-link" href="{% if posts.has_previous %}?page={{ posts.previous_page_number }}{% else %}#{% endif %}" 
+         {% if not posts.has_previous %}tabindex="-1" aria-disabled="true"{% endif %}>
+        Previous
+      </a>
+    </li>
+
+    <!-- Números de página visibles -->
+    {% for num in posts.paginator.page_range %}
+      {% if num >= posts.number|add:'-2' and num <= posts.number|add:'2' %}
+        <li class="page-item {% if num == posts.number %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}" 
+             {% if num == posts.number %}aria-current="page"{% endif %}>
+            {{ num }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Botón Siguiente -->
+    <li class="page-item {% if not posts.has_next %}disabled{% endif %}">
+      <a class="page-link" href="{% if posts.has_next %}?page={{ posts.next_page_number }}{% else %}#{% endif %}"
+         {% if not posts.has_next %}aria-disabled="true"{% endif %}>
+        Next
+      </a>
+    </li>
+
+  </ul>
+</nav>
+{% endblock %}

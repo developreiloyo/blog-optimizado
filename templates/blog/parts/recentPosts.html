@@ -1,0 +1,24 @@
+            
+            {% load static %}
+            <!-- Recent Posts Widget -->
+            <div class="recent-posts-widget widget-item">
+
+              <h3 class="widget-title">Recent Posts</h3>
+
+              {% for recent in recent_posts %}
+    <div class="post-item">
+      {% if recent.image %}
+        <img src="{{ recent.image.url }}" alt="{{ recent.title }}" class="flex-shrink-0">
+      {% else %}
+        <img src="{% static 'img/blog/default.jpg' %}" alt="default" class="flex-shrink-0">
+      {% endif %}
+      <div>
+        <h4><a href="{% url 'blog:post_detail' slug=recent.slug %}">{{ recent.title }}</a></h4>
+        <time datetime="{{ recent.created_at|date:'Y-m-d' }}">{{ recent.created_at|date:"M d, Y" }}</time>
+      </div>
+    </div>
+  {% empty %}
+    <p>No recent posts found.</p>
+  {% endfor %}
+
+            </div><!--/Recent Posts Widget -->

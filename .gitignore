@@ -1,0 +1,67 @@
+# Entornos virtuales
+venv/
+ENV/
+env/
+.venv/
+
+# Archivos de configuración/variables
+.env
+*.env
+
+# Archivos de base de datos (si usas sqlite localmente)
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos de migraciones (opcional: si quieres solo en local)
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/*.log
+
+# Archivos de cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de logs
+*.log
+
+# Archivos compilados de C
+*.so
+
+# Configuración de IDEs/editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de coverage/testing
+.coverage
+*.cover
+*.py,cover
+.hypothesis/
+pytest_cache/
+
+# Archivos estáticos y media generados
+staticfiles/
+media/
+
+# Archivos de colecta de Django (collectstatic)
+static/
+token.*
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+.env.*
+!.env.example
+token
+*.pem
+*.key

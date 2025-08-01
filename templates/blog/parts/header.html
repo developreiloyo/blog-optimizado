@@ -1,0 +1,47 @@
+  {% load static %}
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <!--h1 class="sitename">ZenBlog</h1-->
+        <img src="{% static 'img/logo.png' %}" alt="ZenBlog" class="logo-img">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'blog:post_list' %}" class="{% if request.path == '/' %}active{% endif %}" class="active">Home</a></li>
+          <li><a href="{% url 'blog:post_list' %}#about">About</a></li>
+          <li class="dropdown"><a href="#"><span>Categories</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+                 {% for category in menu_categories %}
+          {% if category.children.exists %}
+            <li class="dropdown">
+              <a href="#"><span>{{ category.name }}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                {% for child in category.children.all %}
+                  <li><a href="{% url 'blog:category_posts' child.slug %}">{{ child.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            <li><a href="{% url 'blog:category_posts' category.slug %}">{{ category.name }}</a></li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+          </li>
+          <li><a href="{% url 'blog:post_list' %}#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="header-social-links">
+        <a href="https://x.com/loyo_reina39302" class="twitter"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://facebook.com/reinaldoloyo" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com/reinaldo.loyo" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://linkedin.com/in//reinaldoloyo" class="linkedin"><i class="bi bi-linkedin"></i></a>
+      </div>
+
+    </div>
+  </header>

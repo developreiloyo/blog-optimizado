@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block content %}
+  {% include "blog/parts/slider.html" %}
+
+  {% include "blog/parts/categoria_block.html" with category=crecimiento posts=crecimiento_posts %}
+  {% include "blog/parts/categoria_block.html" with category=automatizacion posts=automatizacion_posts %}
+  {% include "blog/parts/categoria_block.html" with category=portugues posts=portugues_posts %}
+  {% include "blog/parts/categoria_block.html" with category=ingles posts=ingles_posts %}
+{% endblock %}
