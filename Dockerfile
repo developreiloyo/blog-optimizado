@@ -1,20 +1,38 @@
-# Usa una imagen estándar de Python
+# Usa una imagen ligera de Python
 FROM python:3.11-slim
 
-# Establece el directorio de trabajo
+LABEL maintainer="reinaldo@mikai.blog"
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
 WORKDIR /app
 
-# Copia requirements.txt primero
-COPY requirements.txt .
+# Dependencias del sistema (Pillow y compilaciones)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libjpeg-dev \
+    libpng-dev \
+    libwebp-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instala dependencias con pip
+# Instalar requerimientos
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el resto del proyecto
+# Directorios estáticos y media
+RUN mkdir -p staticfiles media
+
+# Copiar el código del proyecto
 COPY . .
 
-# Expone el puerto (opcional, informativo)
-EXPOSE 8000
+RUN chmod -R 755 /app
 
-# Comando de inicio
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn personalblog.wsgi:application"]
+# Puerto (usar 80 para producción en EasyPanel)
+EXPOSE 80
+
+# Comando final: migraciones, estáticos y gunicorn
+CMD ["sh", "-c", "python manage.py migrate --noinput && \
+                 python manage.py collectstatic --noinput && \
+                 gunicorn personalblog.wsgi:application --bind 0.0.0.0:80 --workers 3"]

@@ -69,3 +69,7 @@ def post_detail(request, slug):
     
     return render(request, 'blog/post_detail.html', context)
 
+def about(request):
+    """Vista para la página 'About Us'"""
+    return render(request, 'blog/about.html')
+

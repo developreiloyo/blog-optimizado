@@ -133,10 +133,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # ⚠️ Solo activa STATICFILES_DIRS si tienes una carpeta "static/" en el repo
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = env("MEDIA_ROOT")  # para que tome /app/media desde el .env
+MEDIA_URL = env("MEDIA_URL")
 
 # Whitenoise storage (para cache busting en producción)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

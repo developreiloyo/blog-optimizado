@@ -106,3 +106,4 @@ class CategoryPostsAPIView(generics.ListAPIView):
     def get_queryset(self):
         category_slug = self.kwargs['slug']
         return Post.objects.filter(category__slug=category_slug).order_by('-created_at')
+    
