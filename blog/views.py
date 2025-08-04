@@ -1,3 +1,8 @@
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.contrib import messages
+from .forms import ContactForm
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from .models import Post, Category
@@ -72,4 +77,26 @@ def post_detail(request, slug):
 def about(request):
     """Vista para la página 'About Us'"""
     return render(request, 'blog/about.html')
+
+def contact(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nombre = form.cleaned_data["nombre"]
+            email = form.cleaned_data["email"]
+            mensaje = form.cleaned_data["mensaje"]
+
+            # Construir el correo
+            subject = f"Nuevo mensaje de contacto de {nombre}"
+            message = f"De: {nombre} <{email}>\n\n{mensaje}"
+            recipient_list = [settings.EMAIL_HOST_USER]  # a ti mismo
+
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
+            messages.success(request, "Tu mensaje fue enviado correctamente ✅")
+            return redirect("blog:contact")
+    else:
+        form = ContactForm()
+
+    return render(request, "blog/contact.html", {"form": form})
 
