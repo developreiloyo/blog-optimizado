@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - ZenBlog Bootstrap Template</title>
+  <title>
+    {% if category %}
+      {{ category.name }} - Mikai
+    {% elif title %}
+      {{ title }} - Mikai
+    {% else %}
+      Mikai
+    {% endif %}
+
+  </title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
