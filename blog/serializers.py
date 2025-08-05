@@ -13,7 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'description', 'posts_count']
+        fields = ['id', 'name', 'slug', 'posts_count']
         
     def get_posts_count(self, obj):
         return obj.post_set.count()
@@ -26,7 +26,7 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'id', 'title', 'slug', 'author', 'category', 
+            'id', 'title', 'slug', 'excerpt', 'author', 'category',
             'content_preview', 'image', 'created_at', 'updated_at'
         ]
         
@@ -41,16 +41,21 @@ class PostDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'id', 'title', 'slug', 'content', 'author', 
+            'id', 'title', 'slug', 'excerpt', 'content', 'author',
             'category', 'image', 'created_at', 'updated_at'
         ]
 
 class PostCreateUpdateSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'image']
-        
+        fields = [
+            'id', 'title', 'slug', 'excerpt', 'content',
+            'category', 'image', 'author', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'author', 'created_at', 'updated_at']
+
     def create(self, validated_data):
-        # El autor se asigna automáticamente desde el request
         validated_data['author'] = self.context['request'].user
         return super().create(validated_data)
