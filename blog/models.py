@@ -26,7 +26,7 @@ class Category(models.Model):
         return " → ".join(full_path[::-1])
     
     def get_absolute_url(self):
-        return reverse('blog:category', args=[self.slug])
+        return reverse("blog:category_posts", kwargs={"slug": self.slug})
 
 
 class Tag(models.Model):
