@@ -66,10 +66,16 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "django_recaptcha",
+    "django.contrib.sitemaps", 
+    "django.contrib.sites",  
+    "robots",
+    
 
     # My apps
     "blog",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -132,8 +138,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ==========================
 # Internationalization
 # ==========================
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "pt-br"
+TIME_ZONE = "America/Sao_Paulo"
 USE_I18N = True
 USE_TZ = True
 
