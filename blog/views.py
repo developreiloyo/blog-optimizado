@@ -1,3 +1,6 @@
+import os
+import random
+from pathlib import Path
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -28,6 +31,8 @@ def post_list(request):
     ingles = Category.objects.filter(slug="ingles").first()
     ingles_posts = Post.objects.filter(category=ingles, status="published")
 
+    carousel_images = _get_carousel_images()
+
     return render(request, "blog/index.html", {
         "crecimiento": crecimiento,
         "crecimiento_posts": crecimiento_posts,
@@ -37,6 +42,8 @@ def post_list(request):
         "portugues_posts": portugues_posts,
         "ingles": ingles,
         "ingles_posts": ingles_posts,
+        "carousel_images": carousel_images,
+        
     })
 
 # Vista para mostrar posts por categoría con paginación
@@ -100,3 +107,25 @@ def contact(request):
 
     return render(request, "blog/contact.html", {"form": form})
 
+def _get_carousel_images():
+    base_static = Path(settings.BASE_DIR) / "static"
+    folder = base_static / "carousel_img"
+    exts = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+
+    files = []
+    if folder.is_dir():
+        for f in folder.iterdir():
+            if f.is_file() and f.suffix.lower() in exts:
+                rel = f.relative_to(base_static).as_posix()  # p.ej. "carousel_img/xxx.jpg"
+                files.append(rel)
+
+    chosen = random.sample(files, min(3, len(files))) if files else []
+    return [
+        {
+            "path": rel,  # en el template: {% static image.path %}
+            "alt": f"Slide {i+1}",
+            "title": f"Slide {i+1} label",
+            "description": f"Descripción para la imagen {i+1}",
+        }
+        for i, rel in enumerate(chosen)
+    ]
