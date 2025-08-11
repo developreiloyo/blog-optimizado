@@ -2,7 +2,7 @@ import os
 import random
 from pathlib import Path
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.contrib import messages
 from .forms import ContactForm
 from django.conf import settings
@@ -89,22 +89,28 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            nombre = form.cleaned_data["nombre"]
+            name = form.cleaned_data["name"]
             email = form.cleaned_data["email"]
-            mensaje = form.cleaned_data["mensaje"]
+            message = form.cleaned_data["message"]
 
-            # Construir el correo
-            subject = f"Nuevo mensaje de contacto de {nombre}"
-            message = f"De: {nombre} <{email}>\n\n{mensaje}"
-            recipient_list = [settings.EMAIL_HOST_USER]  # a ti mismo
+            subject = f"New contact message from {name}"
+            body = f"From: {name} <{email}>\n\n{message}"
 
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
-
-            messages.success(request, "Tu mensaje fue enviado correctamente ✅")
-            return redirect("blog:contact")
+            try:
+                mail = EmailMessage(
+                    subject=subject,
+                    body=body,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[getattr(settings, "EMAIL_HOST_USER", settings.DEFAULT_FROM_EMAIL)],
+                    reply_to=[email],
+                )
+                mail.send(fail_silently=False)
+                messages.success(request, "Thanks! Your message was sent successfully.")
+                return redirect("blog:contact")
+            except Exception as e:
+                messages.error(request, f"Could not send your message: {e}")
     else:
         form = ContactForm()
-
     return render(request, "blog/contact.html", {"form": form})
 
 def _get_carousel_images():
@@ -129,3 +135,4 @@ def _get_carousel_images():
         }
         for i, rel in enumerate(chosen)
     ]
+
