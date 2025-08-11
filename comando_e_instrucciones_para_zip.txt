@@ -1,0 +1,88 @@
+
+No empaques secretos en ZIPs: cuando generes artefactos:
+zip -r blog.zip . \
+  -x "*.pyc" \
+  -x "__pycache__/*" \
+  -x ".git/*" \
+  -x "venv/*" \
+  -x "node_modules/*" \
+  -x ".env.local" \
+  -x ".env" \
+  -x ".DS_Store"
+
+¿Por qué en un archivo .env oculto?
+
+    Seguridad: evita exponer SECRET_KEY, contraseñas y tokens en el repositorio.
+
+    Separación de configuración y código (12-Factor): el mismo código funciona en dev, staging y prod con variables diferentes.
+
+    Rotación y despliegue simples: cambiar una variable no requiere modificar código ni hacer commit.
+
+    Cumplimiento y buenas prácticas: reduce riesgo de filtraciones y auditorías fallidas.
+
+    Portabilidad: cada entorno (local/servidor/CI) inyecta sus propios valores.
+
+
+Este comando crea blog.zip con todo el proyecto, excluyendo artefactos y archivos que no deben desplegarse: bytecode de Python (*.pyc), cachés (__pycache__/), historial de Git (.git/), entornos y dependencias locales (venv/, node_modules/), archivos de variables de entorno sensibles (.env, .env.local) y metadatos del sistema (.DS_Store). Ideal para subir a producción sin secretos ni peso innecesario.
+
+    Tip: si necesitas incluir un .env.production, no lo excluyas en el comando.
+
+
+Notas rapidas:
+
+Para garantizar que no publiques tus claves tu archivo de variables de entorno debe tener algo como esto :
+
+# ==========================
+# Django
+# ==========================
+DEBUG=
+SECRET_KEY=
+ALLOWED_HOSTS=            # ej.: www.tudominio.com,sub.tudominio.com,123.45.67.89
+CSRF_TRUSTED_ORIGINS=     # ej.: https://www.tudominio.com,https://sub.tudominio.com
+
+# ==========================
+# Base de datos
+# ==========================
+# Opción 1: SQLite (desarrollo)
+DB_NAME=                  # ej.: db.sqlite3
+
+# Opción 2: PostgreSQL (producción)
+# DB_NAME=
+# DB_USER=
+# DB_PASSWORD=
+# DB_HOST=
+# DB_PORT=                # ej.: 5432
+
+# ==========================
+# Static & Media
+# ==========================
+STATIC_URL=/static/
+MEDIA_URL=/media/
+STATIC_ROOT=              # ej.: /app/staticfiles
+MEDIA_ROOT=               # ej.: /app/media
+
+# ==========================
+# Seguridad (producción)
+# ==========================
+SECURE_SSL_REDIRECT=      # True/False
+SESSION_COOKIE_SECURE=    # True/False
+CSRF_COOKIE_SECURE=       # True/False
+
+# ==========================
+# Email (SMTP)
+# ==========================
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=               # ej.: smtp.gmail.com
+EMAIL_PORT=               # ej.: 587
+EMAIL_USE_TLS=            # True/False
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=      # usa App Password si es Gmail
+DEFAULT_FROM_EMAIL=
+
+# ==========================
+# reCAPTCHA
+# ==========================
+RECAPTCHA_PUBLIC_KEY=
+RECAPTCHA_PRIVATE_KEY=
+
+

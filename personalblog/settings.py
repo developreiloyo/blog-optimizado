@@ -1,5 +1,4 @@
-import environ
-import os
+import environ, os
 from pathlib import Path
 from datetime import timedelta
 
@@ -24,6 +23,7 @@ environ.Env.read_env(env_file)
 # ==========================
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
+#ALLOWED_HOSTS=['*']
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
